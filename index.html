@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRAJWAL KARTHIKEYA — AI × Cinema × Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #111111;
+            --text: #f0f0f0;
+            --text-muted: #666;
+            --accent: #8B9BB4;
+            --accent-glow: rgba(139, 155, 180, 0.3);
+            --gold: #C9A84C;
+            --red: #8B2500;
+            --border: rgba(255,255,255,0.06);
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--bg);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.15s ease, background 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+        }
+
+        .cursor.hover {
+            transform: scale(2.5);
+            background: rgba(139, 155, 180, 0.1);
+        }
+
+        /* Grain Overlay */
+        .grain {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            animation: grain 8s steps(10) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, 35%); }
+            90% { transform: translate(-10%, 10%); }
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-text {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        .preloader-bar {
+            width: 200px;
+            height: 1px;
+            background: var(--border);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preloader-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            animation: loadBar 2s ease forwards;
+        }
+
+        @keyframes loadBar {
+            to { width: 100%; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            mix-blend-mode: difference;
+        }
+
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: var(--text);
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Section Base */
+        section {
+            min-height: 100vh;
+            padding: 120px 48px;
+            position: relative;
+        }
+
+        /* Hero */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-text {
+            position: absolute;
+            font-family: var(--font-display);
+            font-size: clamp(8rem, 20vw, 20rem);
+            font-weight: 900;
+            color: rgba(255,255,255,0.015);
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease 2.2s forwards;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .hero-title .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .line span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-title .line:nth-child(1) span { animation-delay: 2.3s; }
+        .hero-title .line:nth-child(2) span { animation-delay: 2.45s; }
+        .hero-title .line:nth-child(3) span { animation-delay: 2.6s; }
+
+        .hero-title .italic {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease 2.8s forwards;
+        }
+
+        .hero-sub em {
+            color: var(--text);
+            font-style: normal;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 24px;
+            margin-top: 48px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease 3s forwards;
+        }
+
+        .btn {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text);
+            padding: 14px 32px;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .btn-primary::before {
+            background: var(--text);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 48px;
+            left: 48px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 3.2s forwards;
+        }
+
+        .hero-scroll::after {
+            content: '';
+            display: block;
+            width: 1px;
+            height: 60px;
+            background: var(--accent);
+            margin-top: 12px;
+            animation: scrollLine 2s ease infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { transform: scaleY(0); transform-origin: top; }
+            50% { transform: scaleY(1); transform-origin: top; }
+            50.1% { transform-origin: bottom; }
+            100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+
+        /* About Section */
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 32px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .about-text h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 32px;
+        }
+
+        .about-text h2 .accent {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            max-width: 480px;
+        }
+
+        .about-text p strong {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .about-visual {
+            position: relative;
+            height: 500px;
+        }
+
+        .about-image-frame {
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+        }
+
+        .about-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(40%) contrast(1.1);
+            transition: filter 0.5s;
+        }
+
+        .about-image-frame:hover img {
+            filter: grayscale(0%) contrast(1);
+        }
+
+        .about-image-placeholder {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .about-image-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .about-image-frame::after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            border: 1px solid rgba(139, 155, 180, 0.2);
+            pointer-events: none;
+        }
+
+        .about-tag {
+            position: absolute;
+            bottom: -16px;
+            right: -16px;
+            background: var(--accent);
+            color: var(--bg);
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 8px 16px;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat h3 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat p {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* Philosophy Section */
+        .philosophy {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 60vh;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .philosophy-quote {
+            max-width: 800px;
+        }
+
+        .philosophy-quote blockquote {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.3;
+            color: var(--text);
+            margin-bottom: 32px;
+        }
+
+        .philosophy-quote cite {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-style: normal;
+        }
+
+        /* Projects Section */
+        .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 80px;
+        }
+
+        .projects-header h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+        }
+
+        .projects-header p {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+        }
+
+        .project-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            padding: 64px 0;
+            border-top: 1px solid var(--border);
+            align-items: center;
+            transition: all 0.5s;
+        }
+
+        .project-card:hover {
+            background: rgba(255,255,255,0.01);
+        }
+
+        .project-card:nth-child(even) {
+            direction: rtl;
+        }
+
+        .project-card:nth-child(even) > * {
+            direction: ltr;
+        }
+
+        .project-visual {
+            position: relative;
+            aspect-ratio: 16/10;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .project-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .project-card:hover .project-visual img {
+            transform: scale(1.05);
+        }
+
+        .project-visual-placeholder {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .project-number {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            margin-bottom: 16px;
+        }
+
+        .project-info h3 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .project-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            max-width: 420px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .project-tags span {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .project-card:hover .project-tags span {
+            border-color: rgba(139, 155, 180, 0.3);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .project-link {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .project-link:hover {
+            color: var(--text);
+        }
+
+        .project-link svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s;
+        }
+
+        .project-link:hover svg {
+            transform: translate(3px, -3px);
+        }
+
+        /* Tech Stack Section */
+        .stack {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stack h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 64px;
+        }
+
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 2px;
+        }
+
+        .stack-item {
+            padding: 32px 24px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stack-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            z-index: 0;
+        }
+
+        .stack-item:hover::before {
+            transform: translateY(0);
+        }
+
+        .stack-item:hover {
+            color: var(--bg);
+        }
+
+        .stack-item .icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            display: block;
+        }
+
+        .stack-item .name {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Influences Section */
+        .influences {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .influences h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 64px;
+        }
+
+        .influences-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .influence-card {
+            border: 1px solid var(--border);
+            padding: 48px 32px;
+            text-align: center;
+            transition: all 0.5s;
+            position: relative;
+        }
+
+        .influence-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .influence-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .influence-card:hover {
+            border-color: rgba(139, 155, 180, 0.2);
+        }
+
+        .influence-icon {
+            font-size: 3rem;
+            margin-bottom: 24px;
+        }
+
+        .influence-name {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .influence-trait {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        /* Currently Section */
+        .currently {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .currently h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 48px;
+        }
+
+        .currently-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .currently-item {
+            display: flex;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+            gap: 32px;
+            transition: all 0.3s;
+        }
+
+        .currently-item:hover {
+            padding-left: 16px;
+            border-color: rgba(139, 155, 180, 0.3);
+        }
+
+        .currently-item .label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            min-width: 140px;
+        }
+
+        .currently-item .value {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Contact Section */
+        .contact {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 32px;
+        }
+
+        .contact h2 .italic {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .contact p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 480px;
+            margin-bottom: 48px;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .contact-link {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 14px 28px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 48px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        footer .time {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            section { padding: 80px 24px; }
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .about { grid-template-columns: 1fr; gap: 40px; }
+            .project-card { grid-template-columns: 1fr; gap: 32px; }
+            .project-card:nth-child(even) { direction: ltr; }
+            .influences-grid { grid-template-columns: 1fr; }
+            .about-stats { gap: 24px; }
+            .contact-links { flex-direction: column; }
+            footer { flex-direction: column; gap: 12px; }
+            .cursor, .cursor-dot { display: none; }
+            * { cursor: auto; }
+        }
+
+        /* Horizontal scroll text */
+        .marquee-wrapper {
+            overflow: hidden;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .marquee {
+            display: flex;
+            gap: 64px;
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .marquee span {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 400;
+            color: var(--text-muted);
+            opacity: 0.3;
+        }
+
+        .marquee span.dot {
+            color: var(--accent);
+            opacity: 1;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 3s infinite linear alternate-reverse;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            transform: translate(-2px);
+            opacity: 0.7;
+        }
+
+        .glitch::after {
+            animation: glitch-2 3s infinite linear alternate-reverse;
+            clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+            transform: translate(2px);
+            opacity: 0.7;
+        }
+
+        @keyframes glitch-1 {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes glitch-2 {
+            0% { transform: translate(0); }
+            20% { transform: translate(3px, -3px); }
+            40% { transform: translate(3px, 3px); }
+            60% { transform: translate(-3px, -3px); }
+            80% { transform: translate(-3px, 3px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Line decoration */
+        .line-deco {
+            position: absolute;
+            width: 1px;
+            height: 120px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            opacity: 0.3;
+        }
+
+        .line-deco.left { left: 48px; top: 50%; }
+        .line-deco.right { right: 48px; top: 50%; }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-text">Initializing...</div>
+        <div class="preloader-bar"></div>
+    </div>
+
+    <!-- Grain Overlay -->
+    <div class="grain"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo">Prazzu Silver</div>
+        <ul class="nav-links">
+            <li><a href="#about" class="hoverable">About</a></li>
+            <li><a href="#projects" class="hoverable">Work</a></li>
+            <li><a href="#stack" class="hoverable">Stack</a></li>
+            <li><a href="#contact" class="hoverable">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div class="hero-bg-text">PRAJWAL</div>
+        <div class="line-deco left"></div>
+        <div class="line-deco right"></div>
+
+        <div class="hero-label">AI Builder × Storyteller × Cinema Obsessive</div>
+
+        <h1 class="hero-title">
+            <span class="line"><span>I build things</span></span>
+            <span class="line"><span>I <em class="italic glitch" data-text="wish">wish</em> existed.</span></span>
+            <span class="line"><span>Sometimes I write code.</span></span>
+        </h1>
+
+        <p class="hero-sub">
+            Exploring the intersection of <em>AI</em>, <em>storytelling</em>, and <em>human experience</em>.
+            I don't want to build more software. I want to build <em>better ideas</em>.
+        </p>
+
+        <div class="hero-cta">
+            <a href="#projects" class="btn btn-primary hoverable">View Work</a>
+            <a href="#contact" class="btn hoverable">Get in Touch</a>
+        </div>
+
+        <div class="hero-scroll">Scroll</div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee-wrapper">
+        <div class="marquee">
+            <span>AI</span><span class="dot">●</span>
+            <span>Cinema</span><span class="dot">●</span>
+            <span>Creative Technology</span><span class="dot">●</span>
+            <span>Storytelling</span><span class="dot">●</span>
+            <span>Screenwriting</span><span class="dot">●</span>
+            <span>Human Experience</span><span class="dot">●</span>
+            <span>AI</span><span class="dot">●</span>
+            <span>Cinema</span><span class="dot">●</span>
+            <span>Creative Technology</span><span class="dot">●</span>
+            <span>Storytelling</span><span class="dot">●</span>
+            <span>Screenwriting</span><span class="dot">●</span>
+            <span>Human Experience</span><span class="dot">●</span>
+        </div>
+    </div>
+
+    <!-- About -->
+    <section class="about" id="about">
+        <div class="about-text">
+            <div class="section-label reveal">About Me</div>
+            <h2 class="reveal">
+                I'm <span class="accent">Prajwal</span> — an AI-focused builder who likes turning weird ideas into working things.
+            </h2>
+            <p class="reveal">
+                I care about the intersection of <strong>technology, storytelling, and human experience</strong>.
+                I build small tools, experiment with AI, break things, rebuild them, and occasionally make something surprisingly useful.
+            </p>
+            <p class="reveal">
+                Technology and art don't belong in separate rooms. The most interesting things happen when they collide.
+            </p>
+
+            <div class="about-stats reveal">
+                <div class="stat">
+                    <h3>13+</h3>
+                    <p>Repositories</p>
+                </div>
+                <div class="stat">
+                    <h3>6+</h3>
+                    <p>AI Projects</p>
+                </div>
+                <div class="stat">
+                    <h3>∞</h3>
+                    <p>Curiosity</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-visual reveal">
+            <div class="about-image-frame">
+                <img src="profile.jpg" alt="Prajwal Karthikeya" />
+            </div>
+            <div class="about-tag">AI × CINEMA</div>
+        </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="philosophy">
+        <div class="philosophy-quote reveal">
+            <blockquote>
+                "Make it useful. Make it beautiful. Make it memorable."
+            </blockquote>
+            <cite>— Personal Philosophy</cite>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+        <div class="projects-header">
+            <div>
+                <div class="section-label reveal">Selected Work</div>
+                <h2 class="reveal">Projects</h2>
+            </div>
+            <p class="reveal">Featured experiments & builds</p>
+        </div>
+
+        <!-- Project 1: Wildfire Intelligence -->
+        <div class="project-card reveal">
+            <div class="project-visual">
+                <img src="Wildfire Intelligence.png" alt="Wildfire Intelligence" />
+            </div>
+            <div class="project-info">
+                <div class="project-number">_01.</div>
+                <h3>Wildfire Intelligence</h3>
+                <p>Real-time wildfire monitoring platform using NASA FIRMS satellite data with ML-powered risk prediction. HistGradientBoosting classifier with explainable AI and calibrated probabilities.</p>
+                <div class="project-tags">
+                    <span>Python</span>
+                    <span>FastAPI</span>
+                    <span>Scikit-Learn</span>
+                    <span>Next.js</span>
+                    <span>PostgreSQL</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/PrajwalKarthikeya/Wildfire-Intelligence" target="_blank" class="project-link hoverable">
+                        GitHub
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 2: FilmPass -->
+        <div class="project-card reveal">
+            <div class="project-visual">
+                <div class="project-visual-placeholder">🎬 CINEMA DISTRICT</div>
+            </div>
+            <div class="project-info">
+                <div class="project-number">_02.</div>
+                <h3>FilmPass</h3>
+                <p>A meticulously crafted digital cinema district for cinephiles. Features 10 unique theatres, digital passport system with visa stamps, ticket generation engine, and museum-quality UI with 3D CSS transforms.</p>
+                <div class="project-tags">
+                    <span>Next.js 16</span>
+                    <span>TypeScript</span>
+                    <span>Framer Motion</span>
+                    <span>Supabase</span>
+                    <span>TMDB API</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://film-pass7.vercel.app/" target="_blank" class="project-link hoverable">
+                        Live Site
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                    <a href="https://github.com/PrajwalKarthikeya/FilmPass" target="_blank" class="project-link hoverable">
+                        GitHub
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 3: Spotify Mood -->
+        <div class="project-card reveal">
+            <div class="project-visual">
+                <div class="project-visual-placeholder">🎧 MOOD ENGINE</div>
+            </div>
+            <div class="project-info">
+                <div class="project-number">_03.</div>
+                <h3>Spotify Mood → Audio Persona</h3>
+                <p>A local LLM intent engine that maps contextual human emotion to structured audio metadata. Instead of "What genre do you like?" — it asks "What does this moment feel like?"</p>
+                <div class="project-tags">
+                    <span>Python</span>
+                    <span>Local LLM</span>
+                    <span>NLP</span>
+                    <span>Pydantic</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/PrajwalKarthikeya/Spotify-Mood-to-Audio-Persona" target="_blank" class="project-link hoverable">
+                        GitHub
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 4: grain -->
+        <div class="project-card reveal">
+            <div class="project-visual">
+                <div class="project-visual-placeholder">🍚 RICE TIMER</div>
+            </div>
+            <div class="project-info">
+                <div class="project-number">_04.</div>
+                <h3>grain</h3>
+                <p>A ridiculously simple rice cooker timer. Cups in → countdown → steam-blast finale. Sometimes the best software is the thing that does one tiny job extremely well.</p>
+                <div class="project-tags">
+                    <span>HTML</span>
+                    <span>CSS</span>
+                    <span>Dark Mode</span>
+                    <span>Vercel</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://grain-bice.vercel.app/" target="_blank" class="project-link hoverable">
+                        Live Site
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                    <a href="https://github.com/PrajwalKarthikeya/grain" target="_blank" class="project-link hoverable">
+                        GitHub
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 5: Enterprise Process Auditor -->
+        <div class="project-card reveal">
+            <div class="project-visual">
+                <div class="project-visual-placeholder">🏢 AI AUDITOR</div>
+            </div>
+            <div class="project-info">
+                <div class="project-number">_05.</div>
+                <h3>Enterprise Process Auditor</h3>
+                <p>AI-driven system for analyzing and auditing business processes. Identifies inefficiencies, risks, and potential process improvements using machine learning.</p>
+                <div class="project-tags">
+                    <span>Python</span>
+                    <span>AI</span>
+                    <span>Automation</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/PrajwalKarthikeya/Enterprise-Process-Auditor" target="_blank" class="project-link hoverable">
+                        GitHub
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 6: brewfully -->
+        <div class="project-card reveal">
+            <div class="project-visual">
+                <div class="project-visual-placeholder">☕ BREW COMPANION</div>
+            </div>
+            <div class="project-info">
+                <div class="project-number">_06.</div>
+                <h3>brewfully</h3>
+                <p>A coffee brewing companion built around recipes and discovery. Explore brewing methods, recipes, and the details behind each cup.</p>
+                <div class="project-tags">
+                    <span>HTML</span>
+                    <span>CSS</span>
+                    <span>Discovery</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/PrajwalKarthikeya/brewfully" target="_blank" class="project-link hoverable">
+                        GitHub
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="stack" id="stack">
+        <div class="section-label reveal">The Arsenal</div>
+        <h2 class="reveal">Tech Stack</h2>
+
+        <div class="stack-grid reveal">
+            <div class="stack-item hoverable">
+                <span class="icon">🐍</span>
+                <span class="name">Python</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">📘</span>
+                <span class="name">TypeScript</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">📜</span>
+                <span class="name">JavaScript</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">⚛️</span>
+                <span class="name">React</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">▲</span>
+                <span class="name">Next.js</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">🟢</span>
+                <span class="name">Node.js</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">🤖</span>
+                <span class="name">AI / LLM</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">🔧</span>
+                <span class="name">Git</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">🐧</span>
+                <span class="name">Linux</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">🗄️</span>
+                <span class="name">PostgreSQL</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">🎨</span>
+                <span class="name">Figma</span>
+            </div>
+            <div class="stack-item hoverable">
+                <span class="icon">☁️</span>
+                <span class="name">Vercel</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Influences -->
+    <section class="influences">
+        <div class="section-label reveal">Influences</div>
+        <h2 class="reveal">What Drives Me</h2>
+
+        <div class="influences-grid reveal">
+            <div class="influence-card hoverable">
+                <div class="influence-icon">⚽</div>
+                <div class="influence-name">Cristiano Ronaldo</div>
+                <div class="influence-trait">Discipline</div>
+            </div>
+            <div class="influence-card hoverable">
+                <div class="influence-icon">🎬</div>
+                <div class="influence-name">Griffith</div>
+                <div class="influence-trait">Ambition</div>
+            </div>
+            <div class="influence-card hoverable">
+                <div class="influence-icon">⛸️</div>
+                <div class="influence-name">Alexandra Trusova</div>
+                <div class="influence-trait">Obsession</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Currently -->
+    <section class="currently">
+        <div class="section-label reveal">Status</div>
+        <h2 class="reveal">Currently</h2>
+
+        <div class="currently-list reveal">
+            <div class="currently-item">
+                <span class="label">Building</span>
+                <span class="value">AI-powered tools & experiments</span>
+            </div>
+            <div class="currently-item">
+                <span class="label">Learning</span>
+                <span class="value">Better systems, better engineering</span>
+            </div>
+            <div class="currently-item">
+                <span class="label">Exploring</span>
+                <span class="value">The intersection of AI + creativity</span>
+            </div>
+            <div class="currently-item">
+                <span class="label">Writing</span>
+                <span class="value">Stories, screenplays & ideas</span>
+            </div>
+            <div class="currently-item">
+                <span class="label">Obsessing over</span>
+                <span class="value">Cinema, technology & great storytelling</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+        <div class="section-label reveal">Get in Touch</div>
+        <h2 class="reveal">
+            Let's build<br>
+            <span class="italic">something</span><br>
+            memorable.
+        </h2>
+        <p class="reveal">
+            I'm always interested in hearing about new projects, ideas, or opportunities to create something meaningful together.
+        </p>
+        <div class="contact-links reveal">
+            <a href="https://github.com/PrajwalKarthikeya" target="_blank" class="contact-link hoverable">GitHub</a>
+            <a href="https://www.linkedin.com/in/prajwal-b201b42b4/" target="_blank" class="contact-link hoverable">LinkedIn</a>
+            <a href="mailto:prajwalkarthikeya0007@gmail.com" class="contact-link hoverable">Email</a>
+            <a href="resume.pdf" download="Prajwal_Karthikeya_Resume.pdf" class="contact-link hoverable">Resume</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Prajwal Karthikeya. All rights reserved.</p>
+        <span class="time" id="time"></span>
+    </footer>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 2200);
+        });
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursorDot');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX - 2 + 'px';
+            cursorDot.style.top = mouseY - 2 + 'px';
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effect on interactive elements
+        document.querySelectorAll('.hoverable, a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Live Time
+        function updateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('time').textContent = time;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Parallax on hero background text
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroBg = document.querySelector('.hero-bg-text');
+            if (heroBg) {
+                heroBg.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.3}px))`;
+            }
+        });
+    </script>
+</body>
+</html>
