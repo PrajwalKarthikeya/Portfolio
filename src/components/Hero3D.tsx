@@ -1,9 +1,8 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Float, Text3D, Center, Environment } from '@react-three/drei'
+import { OrbitControls, Float, Environment } from '@react-three/drei'
 import { ShaderGradient, ShaderGradientCanvas } from '@shadergradient/react'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import * as THREE from 'three'
 import './Hero3D.css'
 
 function FloatingGeometry() {
@@ -68,7 +67,7 @@ export default function Hero3D() {
       y: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         damping: 12,
         stiffness: 100
       }

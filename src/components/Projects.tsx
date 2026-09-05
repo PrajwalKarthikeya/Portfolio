@@ -69,7 +69,7 @@ export default function Projects() {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: 'easeOut'
+        ease: [0.4, 0, 0.2, 1]
       }
     }
   }
@@ -97,7 +97,7 @@ export default function Projects() {
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
         >
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <motion.div
               key={project.title}
               className="project-card"

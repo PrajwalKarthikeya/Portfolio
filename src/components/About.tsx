@@ -44,7 +44,7 @@ export default function About() {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: 'easeOut'
+        ease: [0.4, 0, 0.2, 1]
       }
     }
   }
