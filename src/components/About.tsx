@@ -64,51 +64,48 @@ export default function About() {
           </motion.div>
 
           <motion.h2 variants={itemVariants}>
-            Crafting <span className="accent">digital experiences</span> at the
-            intersection of technology and art
+            Architecting <span className="accent">intelligent systems</span> at the
+            intersection of AI and engineering
           </motion.h2>
 
           <motion.p variants={itemVariants}>
-            I'm a <strong>full-stack developer</strong> and{' '}
-            <strong>AI researcher</strong> passionate about building immersive
-            web experiences. My work spans from cinematic web design to
-            cutting-edge machine learning applications.
+            I'm an <strong>AI Engineer & Developer</strong> passionate about building 
+            cutting-edge machine learning applications and intelligent solutions. My work 
+            spans from deep learning research to scalable AI deployments.
           </motion.p>
 
           <motion.p variants={itemVariants}>
-            With expertise in <strong>React, Three.js, and Python</strong>, I
-            create solutions that merge technical excellence with creative
-            vision. Currently exploring the frontiers of{' '}
-            <strong>generative AI</strong> and{' '}
-            <strong>real-time 3D rendering</strong>.
+            With expertise in <strong>Python, PyTorch, and generative models</strong>, I
+            create solutions that push the boundaries of what's possible. Currently exploring 
+            the frontiers of <strong>LLMs, computer vision, and autonomous agents</strong>.
           </motion.p>
 
           <motion.div className="skills-grid" variants={itemVariants}>
             <div className="skill-category">
-              <h4>Frontend</h4>
+              <h4>Machine Learning</h4>
               <ul>
-                <li>React / Next.js</li>
-                <li>Three.js / R3F</li>
-                <li>TypeScript</li>
-                <li>Framer Motion</li>
+                <li>PyTorch & TensorFlow</li>
+                <li>Computer Vision (YOLO)</li>
+                <li>Transformers & LLMs</li>
+                <li>Predictive Modeling</li>
               </ul>
             </div>
             <div className="skill-category">
-              <h4>Backend</h4>
+              <h4>Engineering</h4>
               <ul>
-                <li>Node.js</li>
-                <li>Python</li>
-                <li>PostgreSQL</li>
-                <li>FastAPI</li>
+                <li>Python & C++</li>
+                <li>FastAPI / Flask</li>
+                <li>Data Pipelines</li>
+                <li>Docker & Cloud</li>
               </ul>
             </div>
             <div className="skill-category">
-              <h4>AI/ML</h4>
+              <h4>Generative AI</h4>
               <ul>
-                <li>PyTorch</li>
-                <li>TensorFlow</li>
-                <li>LangChain</li>
-                <li>Computer Vision</li>
+                <li>LangChain & Agents</li>
+                <li>Diffusion Models</li>
+                <li>RAG Systems</li>
+                <li>Model Fine-Tuning</li>
               </ul>
             </div>
           </motion.div>

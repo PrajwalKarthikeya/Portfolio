@@ -24,25 +24,74 @@ function WobbleBox() {
 const projects = [
   {
     title: 'Wildfire Intelligence',
-    category: 'AI / Computer Vision',
-    description: 'Real-time wildfire detection system using satellite imagery and deep learning for early warning and prevention.',
-    tech: ['Python', 'PyTorch', 'Computer Vision', 'React'],
+    category: 'Computer Vision',
+    description: 'Real-time wildfire monitoring and intelligence system. Uses satellite data to track and analyze wildfire activity.',
+    tech: ['Python', 'PyTorch', 'Computer Vision'],
     image: '/wildfire-intelligence.png',
-    link: '#'
+    link: 'https://github.com/PrajwalKarthikeya/Wildfire-Intelligence'
   },
   {
-    title: 'Omphalos Todo',
-    category: 'Desktop App',
-    description: 'Elegant todo management app with Obsidian vault sync, built with Electron for seamless task tracking.',
-    tech: ['Electron', 'React', 'TypeScript', 'Node.js'],
-    link: '#'
+    title: 'Enterprise Process Auditor',
+    category: 'AI Agents',
+    description: 'AI-driven system for analyzing and auditing business processes. Identifies inefficiencies, risks, and potential process improvements.',
+    tech: ['Python', 'LLMs', 'LangChain'],
+    link: 'https://github.com/PrajwalKarthikeya/Enterprise-Process-Auditor'
   },
   {
-    title: 'AI Cinema Tools',
-    category: 'Creative AI',
-    description: 'Suite of AI-powered tools for filmmakers including script analysis, shot composition, and color grading assistance.',
-    tech: ['Python', 'LangChain', 'OpenAI', 'FastAPI'],
-    link: '#'
+    title: 'Notion AI Script Engine',
+    category: 'Generative AI',
+    description: 'AI-powered engine for transforming ideas into structured scripts. Designed around automated content generation and organization.',
+    tech: ['Python', 'OpenAI', 'Notion API'],
+    link: 'https://github.com/PrajwalKarthikeya/Notion-AI-Script-Engine'
+  },
+  {
+    title: 'Spotify Mood to Audio Persona',
+    category: 'Machine Learning',
+    description: 'A local LLM intent engine designed to map contextual human emotion to structured audio metadata.',
+    tech: ['Python', 'NLP', 'Spotify API'],
+    link: 'https://github.com/PrajwalKarthikeya/Spotify-Mood-to-Audio-Persona'
+  },
+  {
+    title: 'deepfocus',
+    category: 'Productivity',
+    description: 'Focus application aimed at distraction-free deep work environments leveraging smart scheduling.',
+    tech: ['TypeScript', 'React', 'Electron'],
+    link: 'https://github.com/PrajwalKarthikeya/deepfocus'
+  },
+  {
+    title: 'Bookshelf',
+    category: 'Full Stack',
+    description: 'Digital bookshelf for tracking reading progress and discovering new literature.',
+    tech: ['JavaScript', 'React', 'Node.js'],
+    link: 'https://github.com/PrajwalKarthikeya/Bookshelf'
+  },
+  {
+    title: 'brewfully',
+    category: 'Lifestyle',
+    description: 'A coffee brewing companion built around recipes and discovery. Explore brewing methods and details behind each cup.',
+    tech: ['JavaScript', 'React', 'Tailwind'],
+    link: 'https://github.com/PrajwalKarthikeya/brewfully'
+  },
+  {
+    title: 'Hydration Interval Planner',
+    category: 'Health',
+    description: 'Smart planner that schedules and tracks daily hydration needs based on individual intervals.',
+    tech: ['JavaScript', 'React', 'CSS'],
+    link: 'https://github.com/PrajwalKarthikeya/Hydration-Interval-Planner'
+  },
+  {
+    title: 'FilmPass',
+    category: 'Web App',
+    description: 'Cinematic application for securing access and passes to independent film festivals.',
+    tech: ['JavaScript', 'React', 'Firebase'],
+    link: 'https://github.com/PrajwalKarthikeya/FilmPass'
+  },
+  {
+    title: 'grain',
+    category: 'Utility',
+    description: 'Minimal rice cooker timer built for simple, distraction-free use. Supports cup-based timing and countdowns.',
+    tech: ['JavaScript', 'React'],
+    link: 'https://github.com/PrajwalKarthikeya/grain'
   }
 ]
 

@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--bg);
+  background: #050505;
   z-index: 99999;
   display: flex;
   align-items: center;
@@ -13,23 +13,66 @@
 }
 
 .preloader-text {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.vader-text {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: #ff2a2a;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  font-weight: 900;
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+  margin-bottom: 8px;
 }
 
-.preloader-bar {
-  width: 300px;
-  height: 2px;
-  background: var(--border);
+.vader-sub {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #888;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.lightsaber-hilt {
   position: relative;
-  overflow: hidden;
+  width: 6px;
+  height: 40px;
+  background: #bbbbbb;
+  border-radius: 2px;
+  box-shadow: inset -2px 0 4px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(90deg);
 }
 
-.preloader-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
+.hilts-details {
+  width: 8px;
+  height: 12px;
+  background: #333;
+  margin-top: 4px;
+  border-radius: 1px;
+}
+
+.lightsaber-blade {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 350px;
+  background: #fff;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 
+    0 0 10px #fff,
+    0 0 20px #ff0000,
+    0 0 40px #ff0000,
+    0 0 80px #ff0000,
+    0 0 120px #ff0000;
+  z-index: -1;
 }
