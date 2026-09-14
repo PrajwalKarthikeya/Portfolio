@@ -70,6 +70,7 @@ const projects = [
     category: 'Lifestyle',
     description: 'A coffee brewing companion built around recipes and discovery. Explore brewing methods and details behind each cup.',
     tech: ['JavaScript', 'React', 'Tailwind'],
+    image: '/brewfully.png',
     link: 'https://github.com/PrajwalKarthikeya/brewfully'
   },
   {
